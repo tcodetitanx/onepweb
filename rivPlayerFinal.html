@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rive Animation</title>
+  <script src="https://unpkg.com/@rive-app/canvas@2.20.0" defer></script>
+  <style>
+    /* Set the background color of the entire page */
+    body {
+      background-color: white;
+      margin: 0; /* Remove default margin */
+      height: 100vh; /* Ensure full height of the viewport */
+      display: flex;
+      justify-content: center; /* Center horizontally */
+      align-items: center; /* Center vertically */
+      overflow: hidden; /* Prevent scrolling */
+    }
+
+    /* Center the canvas without a border and ensure it fills the screen */
+    canvas {
+      display: block; /* Remove any space below the canvas */
+      width: 100%; /* Ensure it can stretch to the width of the viewport */
+      height: 100%; /* Ensure it can stretch to the height of the viewport */
+      object-fit: contain; /* Ensures the aspect ratio is preserved */
+    }
+  </style>
+</head>
+<body>
+  <!-- Canvas for displaying the Rive animation -->
+  <canvas id="canvas"></canvas>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Check if the 'firstVisit' cookie exists
+      if (document.cookie.indexOf('firstVisit=true') === -1) {
+        // If the cookie doesn't exist, play the animation
+        if (window.rive) {
+          const riveInstance = new window.rive.Rive({
+            src: './anim3.riv',  // Path to your .riv file (local or URL)
+            canvas: document.getElementById('canvas'),  // Canvas element
+            autoplay: true,  // Automatically start the animation
+            onLoad: () => {
+              // Adjust the drawing surface to fit the canvas size
+              riveInstance.resizeDrawingSurfaceToCanvas();
+              console.log('Rive animation loaded and autoplaying');
+              // Start the timeline-based animation (timeline1)
+              riveInstance.play('timeline1');  // Replace with the correct timeline name
+            },
+          });
+
+          // Optional: Handle window resize to adjust the drawing surface to canvas
+          window.addEventListener('resize', () => {
+            riveInstance.resizeDrawingSurfaceToCanvas();
+          });
+        } else {
+          console.error('Rive library not loaded');
+        }
+
+        // Set a cookie to remember the user has visited
+        document.cookie = "firstVisit=true; max-age=" + 60 * 60 * 24 * 365 + "; path=/"; // 1 year expiration
+
+        // Redirect after the animation plays for 6 seconds
+        setTimeout(function(){
+          window.location.href = 'https://oneplatform.pro/home';  // Replace with your target URL
+        }, 6000); // 6000 milliseconds = 6 seconds
+      } else {
+        // If the cookie exists, redirect the user immediately
+        window.location.href = 'https://oneplatform.pro/home';
+      }
+    });
+  </script>
+</body>
+</html>
